@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字クイズ100問</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Yu Gothic","Hiragino Sans",sans-serif;background:linear-gradient(135deg,#fff7d6,#d7a84f);min-height:100vh;color:#2b1d0e}
+.ad-top{position:fixed;top:12px;right:12px;width:300px;height:90px;border:2px dashed #8b5a2b;border-radius:12px;background:white;display:flex;align-items:center;justify-content:center;text-align:center;z-index:10;font-size:14px;color:#6b4a25}
+.wrap{max-width:880px;margin:auto;padding:120px 16px 40px}
+.game{background:rgba(255,255,255,.96);border:4px solid #8b5a2b;border-radius:24px;padding:26px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+h1{margin-top:0;font-size:34px}
+.menu{display:grid;gap:14px;margin-top:20px}
+button{font-size:18px;padding:14px;border:none;border-radius:14px;cursor:pointer;background:#8b5a2b;color:white;font-weight:bold;transition:.15s}
+button:hover{transform:scale(1.03);opacity:.95}
+.easy{background:#2e8b57}
+.normal{background:#1976a3}
+.hard{background:#9b3f1f}
+.back{background:#555}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-weight:bold;margin-bottom:18px;background:#fff3d4;border-radius:12px;padding:10px}
+.question{font-size:30px;font-weight:bold;background:#fff8e8;border-radius:16px;padding:26px;margin-bottom:20px;line-height:1.6}
+.choices{display:grid;gap:12px}
+.correct{background:#2e8b57!important}
+.wrong{background:#b22222!important}
+.result{font-size:22px;font-weight:bold;margin-top:18px;min-height:32px}
+.comment{margin-top:12px;font-size:15px;color:#5b4630;line-height:1.6}
+.next{margin-top:18px;background:#1f4e79;display:none}
+.restart{margin-top:18px;background:#6b3fa0;display:none}
+.ad-bottom{margin-top:24px;height:100px;border:2px dashed #8b5a2b;border-radius:14px;background:white;display:flex;justify-content:center;align-items:center;text-align:center;font-size:14px;color:#6b4a25}
+.hidden{display:none}
+.badge{display:inline-block;background:#fff3d4;border:1px solid #d3a64d;border-radius:999px;padding:6px 12px;margin:4px;font-weight:bold}
+@media(max-width:900px){.ad-top{position:static;width:auto;height:70px;margin:12px}.wrap{padding-top:20px}h1{font-size:28px}.question{font-size:26px}button{font-size:16px}}
+</style>
+</head>
+<body>
+
+<div class="ad-top"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8398161859137802"
+     crossorigin="anonymous"></script>
+<!-- チェス -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8398161859137802"
+     data-ad-slot="5599163841"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+
+<div class="wrap">
+<div class="game">
+<h1>🈶 漢字クイズ100問</h1>
+
+<div id="menu">
+  <p>難易度を選んでください</p>
+  <div>
+    <span class="badge">初級34問</span>
+    <span class="badge">中級33問</span>
+    <span class="badge">上級33問</span>
+    <span class="badge">合計100問</span>
+  </div>
+  <div class="menu">
+    <button class="easy" onclick="startGame('easy')">初級：かんたんな漢字</button>
+    <button class="normal" onclick="startGame('normal')">中級：生活で使う漢字</button>
+    <button class="hard" onclick="startGame('hard')">上級：難読漢字</button>
+    <button onclick="startGame('all')">全100問ランダム</button>
+  </div>
+</div>
+
+<div id="quiz" class="hidden">
+  <div class="status">
+    <div>難易度：<span id="levelName"></span></div>
+    <div>問題：<span id="count"></span>/<span id="total"></span></div>
+    <div>スコア：<span id="score">0</span></div>
+  </div>
+
+  <div class="question" id="question"></div>
+  <div class="choices" id="choices"></div>
+  <div class="result" id="result"></div>
+  <div class="comment" id="comment"></div>
+
+  <button class="next" id="nextBtn" onclick="nextQuestion()">次の問題へ</button>
+  <button class="restart" id="restartBtn" onclick="restartGame()">メニューに戻る</button>
+</div>
+
+<div class="ad-bottom"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8398161859137802"
+     crossorigin="anonymous"></script>
+<!-- チェス -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8398161859137802"
+     data-ad-slot="5599163841"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+</div>
+</div>
+
+<script>
+const quizData = [{"level": "easy", "q": "「山」の読み方は？", "c": ["やま", "かわ", "そら", "もり"], "a": "やま", "e": "山は「やま」と読みます。"}, {"level": "easy", "q": "「川」の読み方は？", "c": ["かわ", "やま", "うみ", "いけ"], "a": "かわ", "e": "川は「かわ」と読みます。"}, {"level": "easy", "q": "「空」の読み方は？", "c": ["そら", "あめ", "くも", "ほし"], "a": "そら", "e": "空は「そら」と読みます。"}, {"level": "easy", "q": "「雨」の読み方は？", "c": ["あめ", "ゆき", "かぜ", "そら"], "a": "あめ", "e": "雨は「あめ」と読みます。"}, {"level": "easy", "q": "「火」の読み方は？", "c": ["ひ", "みず", "き", "つち"], "a": "ひ", "e": "火は「ひ」と読みます。"}, {"level": "easy", "q": "「水」の読み方は？", "c": ["みず", "ひ", "つち", "いし"], "a": "みず", "e": "水は「みず」と読みます。"}, {"level": "easy", "q": "「木」の読み方は？", "c": ["き", "ひ", "やま", "かわ"], "a": "き", "e": "木は「き」と読みます。"}, {"level": "easy", "q": "「金」の読み方は？", "c": ["かね", "いし", "つち", "くさ"], "a": "かね", "e": "金は「かね」と読みます。"}, {"level": "easy", "q": "「月」の読み方は？", "c": ["つき", "ひ", "ほし", "そら"], "a": "つき", "e": "月は「つき」と読みます。"}, {"level": "easy", "q": "「花」の読み方は？", "c": ["はな", "くさ", "き", "み"], "a": "はな", "e": "花は「はな」と読みます。"}, {"level": "easy", "q": "「犬」の読み方は？", "c": ["いぬ", "ねこ", "うま", "とり"], "a": "いぬ", "e": "犬は「いぬ」と読みます。"}, {"level": "easy", "q": "「猫」の読み方は？", "c": ["ねこ", "いぬ", "とり", "さる"], "a": "ねこ", "e": "猫は「ねこ」と読みます。"}, {"level": "easy", "q": "「鳥」の読み方は？", "c": ["とり", "むし", "さかな", "うま"], "a": "とり", "e": "鳥は「とり」と読みます。"}, {"level": "easy", "q": "「魚」の読み方は？", "c": ["さかな", "とり", "むし", "ねこ"], "a": "さかな", "e": "魚は「さかな」と読みます。"}, {"level": "easy", "q": "「車」の読み方は？", "c": ["くるま", "でんしゃ", "みち", "いえ"], "a": "くるま", "e": "車は「くるま」と読みます。"}, {"level": "easy", "q": "「駅」の読み方は？", "c": ["えき", "みせ", "いえ", "まち"], "a": "えき", "e": "駅は「えき」と読みます。"}, {"level": "easy", "q": "「町」の読み方は？", "c": ["まち", "むら", "くに", "みち"], "a": "まち", "e": "町は「まち」と読みます。"}, {"level": "easy", "q": "「村」の読み方は？", "c": ["むら", "まち", "くに", "しま"], "a": "むら", "e": "村は「むら」と読みます。"}, {"level": "easy", "q": "「人」の読み方は？", "c": ["ひと", "こ", "おとこ", "おんな"], "a": "ひと", "e": "人は「ひと」と読みます。"}, {"level": "easy", "q": "「子」の読み方は？", "c": ["こ", "ひと", "おや", "とも"], "a": "こ", "e": "子は「こ」と読みます。"}, {"level": "easy", "q": "「手」の読み方は？", "c": ["て", "あし", "め", "みみ"], "a": "て", "e": "手は「て」と読みます。"}, {"level": "easy", "q": "「足」の読み方は？", "c": ["あし", "て", "め", "くち"], "a": "あし", "e": "足は「あし」と読みます。"}, {"level": "easy", "q": "「目」の読み方は？", "c": ["め", "みみ", "くち", "はな"], "a": "め", "e": "目は「め」と読みます。"}, {"level": "easy", "q": "「耳」の読み方は？", "c": ["みみ", "め", "くち", "はな"], "a": "みみ", "e": "耳は「みみ」と読みます。"}, {"level": "easy", "q": "「口」の読み方は？", "c": ["くち", "め", "みみ", "て"], "a": "くち", "e": "口は「くち」と読みます。"}, {"level": "easy", "q": "「白」の読み方は？", "c": ["しろ", "くろ", "あか", "あお"], "a": "しろ", "e": "白は「しろ」と読みます。"}, {"level": "easy", "q": "「黒」の読み方は？", "c": ["くろ", "しろ", "あか", "きいろ"], "a": "くろ", "e": "黒は「くろ」と読みます。"}, {"level": "easy", "q": "「赤」の読み方は？", "c": ["あか", "あお", "しろ", "くろ"], "a": "あか", "e": "赤は「あか」と読みます。"}, {"level": "easy", "q": "「青」の読み方は？", "c": ["あお", "あか", "しろ", "くろ"], "a": "あお", "e": "青は「あお」と読みます。"}, {"level": "easy", "q": "「右」の読み方は？", "c": ["みぎ", "ひだり", "うえ", "した"], "a": "みぎ", "e": "右は「みぎ」と読みます。"}, {"level": "easy", "q": "「左」の読み方は？", "c": ["ひだり", "みぎ", "うえ", "した"], "a": "ひだり", "e": "左は「ひだり」と読みます。"}, {"level": "easy", "q": "「上」の読み方は？", "c": ["うえ", "した", "みぎ", "なか"], "a": "うえ", "e": "上は「うえ」と読みます。"}, {"level": "easy", "q": "「下」の読み方は？", "c": ["した", "うえ", "なか", "そと"], "a": "した", "e": "下は「した」と読みます。"}, {"level": "easy", "q": "「中」の読み方は？", "c": ["なか", "そと", "うえ", "した"], "a": "なか", "e": "中は「なか」と読みます。"}, {"level": "normal", "q": "「学校」の読み方は？", "c": ["がっこう", "がくせい", "こうしゃ", "きょうしつ"], "a": "がっこう", "e": "学校は「がっこう」と読みます。"}, {"level": "normal", "q": "「先生」の読み方は？", "c": ["せんせい", "せいと", "がくせい", "ともだち"], "a": "せんせい", "e": "先生は「せんせい」と読みます。"}, {"level": "normal", "q": "「時間」の読み方は？", "c": ["じかん", "とけい", "きかん", "じだい"], "a": "じかん", "e": "時間は「じかん」と読みます。"}, {"level": "normal", "q": "「電車」の読み方は？", "c": ["でんしゃ", "くるま", "じてんしゃ", "ひこうき"], "a": "でんしゃ", "e": "電車は「でんしゃ」と読みます。"}, {"level": "normal", "q": "「新聞」の読み方は？", "c": ["しんぶん", "ざっし", "ほん", "てがみ"], "a": "しんぶん", "e": "新聞は「しんぶん」と読みます。"}, {"level": "normal", "q": "「料理」の読み方は？", "c": ["りょうり", "しょくじ", "やさい", "ごはん"], "a": "りょうり", "e": "料理は「りょうり」と読みます。"}, {"level": "normal", "q": "「病院」の読み方は？", "c": ["びょういん", "がっこう", "こうえん", "えき"], "a": "びょういん", "e": "病院は「びょういん」と読みます。"}, {"level": "normal", "q": "「旅行」の読み方は？", "c": ["りょこう", "さんぽ", "しゅっちょう", "うんどう"], "a": "りょこう", "e": "旅行は「りょこう」と読みます。"}, {"level": "normal", "q": "「勉強」の読み方は？", "c": ["べんきょう", "れんしゅう", "しごと", "けんきゅう"], "a": "べんきょう", "e": "勉強は「べんきょう」と読みます。"}, {"level": "normal", "q": "「運動」の読み方は？", "c": ["うんどう", "べんきょう", "しごと", "りょこう"], "a": "うんどう", "e": "運動は「うんどう」と読みます。"}, {"level": "normal", "q": "「図書館」の読み方は？", "c": ["としょかん", "びじゅつかん", "はくぶつかん", "たいくかん"], "a": "としょかん", "e": "図書館は「としょかん」と読みます。"}, {"level": "normal", "q": "「美術館」の読み方は？", "c": ["びじゅつかん", "としょかん", "えいがかん", "たいくかん"], "a": "びじゅつかん", "e": "美術館は「びじゅつかん」と読みます。"}, {"level": "normal", "q": "「動物園」の読み方は？", "c": ["どうぶつえん", "すいぞくかん", "こうえん", "ゆうえんち"], "a": "どうぶつえん", "e": "動物園は「どうぶつえん」と読みます。"}, {"level": "normal", "q": "「水族館」の読み方は？", "c": ["すいぞくかん", "どうぶつえん", "としょかん", "びじゅつかん"], "a": "すいぞくかん", "e": "水族館は「すいぞくかん」と読みます。"}, {"level": "normal", "q": "「自転車」の読み方は？", "c": ["じてんしゃ", "でんしゃ", "じどうしゃ", "ひこうき"], "a": "じてんしゃ", "e": "自転車は「じてんしゃ」と読みます。"}, {"level": "normal", "q": "「飛行機」の読み方は？", "c": ["ひこうき", "でんしゃ", "ふね", "くるま"], "a": "ひこうき", "e": "飛行機は「ひこうき」と読みます。"}, {"level": "normal", "q": "「警察」の読み方は？", "c": ["けいさつ", "しょうぼう", "びょういん", "しやくしょ"], "a": "けいさつ", "e": "警察は「けいさつ」と読みます。"}, {"level": "normal", "q": "「消防」の読み方は？", "c": ["しょうぼう", "けいさつ", "びょういん", "がっこう"], "a": "しょうぼう", "e": "消防は「しょうぼう」と読みます。"}, {"level": "normal", "q": "「会社」の読み方は？", "c": ["かいしゃ", "がっこう", "みせ", "しごと"], "a": "かいしゃ", "e": "会社は「かいしゃ」と読みます。"}, {"level": "normal", "q": "「銀行」の読み方は？", "c": ["ぎんこう", "ゆうびんきょく", "かいしゃ", "みせ"], "a": "ぎんこう", "e": "銀行は「ぎんこう」と読みます。"}, {"level": "normal", "q": "「郵便局」の読み方は？", "c": ["ゆうびんきょく", "ぎんこう", "しやくしょ", "えき"], "a": "ゆうびんきょく", "e": "郵便局は「ゆうびんきょく」と読みます。"}, {"level": "normal", "q": "「公園」の読み方は？", "c": ["こうえん", "がっこう", "えき", "みせ"], "a": "こうえん", "e": "公園は「こうえん」と読みます。"}, {"level": "normal", "q": "「道路」の読み方は？", "c": ["どうろ", "せんろ", "みちばた", "こうそく"], "a": "どうろ", "e": "道路は「どうろ」と読みます。"}, {"level": "normal", "q": "「信号」の読み方は？", "c": ["しんごう", "ひょうしき", "でんとう", "こうつう"], "a": "しんごう", "e": "信号は「しんごう」と読みます。"}, {"level": "normal", "q": "「安全」の読み方は？", "c": ["あんぜん", "きけん", "へいわ", "じゆう"], "a": "あんぜん", "e": "安全は「あんぜん」と読みます。"}, {"level": "normal", "q": "「危険」の読み方は？", "c": ["きけん", "あんぜん", "じこ", "ちゅうい"], "a": "きけん", "e": "危険は「きけん」と読みます。"}, {"level": "normal", "q": "「自然」の読み方は？", "c": ["しぜん", "きせつ", "てんき", "ちきゅう"], "a": "しぜん", "e": "自然は「しぜん」と読みます。"}, {"level": "normal", "q": "「季節」の読み方は？", "c": ["きせつ", "しぜん", "てんき", "じかん"], "a": "きせつ", "e": "季節は「きせつ」と読みます。"}, {"level": "normal", "q": "「春夏秋冬」の読み方は？", "c": ["しゅんかしゅうとう", "はるなつあきふゆ", "しき", "きせつ"], "a": "しゅんかしゅうとう", "e": "春夏秋冬は「しゅんかしゅうとう」とも読みます。"}, {"level": "normal", "q": "「台風」の読み方は？", "c": ["たいふう", "おおあめ", "かみなり", "つなみ"], "a": "たいふう", "e": "台風は「たいふう」と読みます。"}, {"level": "normal", "q": "「地震」の読み方は？", "c": ["じしん", "かじ", "たいふう", "つなみ"], "a": "じしん", "e": "地震は「じしん」と読みます。"}, {"level": "normal", "q": "「火事」の読み方は？", "c": ["かじ", "じしん", "たいふう", "さいがい"], "a": "かじ", "e": "火事は「かじ」と読みます。"}, {"level": "normal", "q": "「災害」の読み方は？", "c": ["さいがい", "じこ", "きけん", "ぼうさい"], "a": "さいがい", "e": "災害は「さいがい」と読みます。"}, {"level": "hard", "q": "「鬱」の読み方は？", "c": ["うつ", "かぜ", "やみ", "くもり"], "a": "うつ", "e": "鬱は「うつ」と読みます。"}, {"level": "hard", "q": "「薔薇」の読み方は？", "c": ["ばら", "さくら", "ひまわり", "あじさい"], "a": "ばら", "e": "薔薇は「ばら」と読みます。"}, {"level": "hard", "q": "「檸檬」の読み方は？", "c": ["れもん", "みかん", "りんご", "ぶどう"], "a": "れもん", "e": "檸檬は「れもん」と読みます。"}, {"level": "hard", "q": "「葡萄」の読み方は？", "c": ["ぶどう", "りんご", "もも", "なし"], "a": "ぶどう", "e": "葡萄は「ぶどう」と読みます。"}, {"level": "hard", "q": "「林檎」の読み方は？", "c": ["りんご", "みかん", "ぶどう", "いちご"], "a": "りんご", "e": "林檎は「りんご」と読みます。"}, {"level": "hard", "q": "「蜜柑」の読み方は？", "c": ["みかん", "りんご", "れもん", "すいか"], "a": "みかん", "e": "蜜柑は「みかん」と読みます。"}, {"level": "hard", "q": "「西瓜」の読み方は？", "c": ["すいか", "めろん", "みかん", "なし"], "a": "すいか", "e": "西瓜は「すいか」と読みます。"}, {"level": "hard", "q": "「胡瓜」の読み方は？", "c": ["きゅうり", "なす", "だいこん", "にんじん"], "a": "きゅうり", "e": "胡瓜は「きゅうり」と読みます。"}, {"level": "hard", "q": "「茄子」の読み方は？", "c": ["なす", "きゅうり", "とまと", "かぼちゃ"], "a": "なす", "e": "茄子は「なす」と読みます。"}, {"level": "hard", "q": "「南瓜」の読み方は？", "c": ["かぼちゃ", "すいか", "なす", "きゅうり"], "a": "かぼちゃ", "e": "南瓜は「かぼちゃ」と読みます。"}, {"level": "hard", "q": "「大蒜」の読み方は？", "c": ["にんにく", "しょうが", "ねぎ", "だいこん"], "a": "にんにく", "e": "大蒜は「にんにく」と読みます。"}, {"level": "hard", "q": "「生姜」の読み方は？", "c": ["しょうが", "にんにく", "わさび", "からし"], "a": "しょうが", "e": "生姜は「しょうが」と読みます。"}, {"level": "hard", "q": "「山葵」の読み方は？", "c": ["わさび", "しょうが", "からし", "にんにく"], "a": "わさび", "e": "山葵は「わさび」と読みます。"}, {"level": "hard", "q": "「海老」の読み方は？", "c": ["えび", "かに", "たこ", "いか"], "a": "えび", "e": "海老は「えび」と読みます。"}, {"level": "hard", "q": "「烏賊」の読み方は？", "c": ["いか", "たこ", "えび", "かに"], "a": "いか", "e": "烏賊は「いか」と読みます。"}, {"level": "hard", "q": "「蛸」の読み方は？", "c": ["たこ", "いか", "えび", "かに"], "a": "たこ", "e": "蛸は「たこ」と読みます。"}, {"level": "hard", "q": "「鰻」の読み方は？", "c": ["うなぎ", "さけ", "まぐろ", "たい"], "a": "うなぎ", "e": "鰻は「うなぎ」と読みます。"}, {"level": "hard", "q": "「鮪」の読み方は？", "c": ["まぐろ", "さけ", "たい", "あじ"], "a": "まぐろ", "e": "鮪は「まぐろ」と読みます。"}, {"level": "hard", "q": "「鯖」の読み方は？", "c": ["さば", "あじ", "いわし", "たい"], "a": "さば", "e": "鯖は「さば」と読みます。"}, {"level": "hard", "q": "「鰯」の読み方は？", "c": ["いわし", "さば", "あじ", "さんま"], "a": "いわし", "e": "鰯は「いわし」と読みます。"}, {"level": "hard", "q": "「秋刀魚」の読み方は？", "c": ["さんま", "あじ", "さば", "いわし"], "a": "さんま", "e": "秋刀魚は「さんま」と読みます。"}, {"level": "hard", "q": "「鱈」の読み方は？", "c": ["たら", "たい", "さけ", "まぐろ"], "a": "たら", "e": "鱈は「たら」と読みます。"}, {"level": "hard", "q": "「鯛」の読み方は？", "c": ["たい", "さけ", "まぐろ", "さば"], "a": "たい", "e": "鯛は「たい」と読みます。"}, {"level": "hard", "q": "「鹿」の読み方は？", "c": ["しか", "うま", "いぬ", "ねこ"], "a": "しか", "e": "鹿は「しか」と読みます。"}, {"level": "hard", "q": "「熊」の読み方は？", "c": ["くま", "しか", "さる", "きつね"], "a": "くま", "e": "熊は「くま」と読みます。"}, {"level": "hard", "q": "「狐」の読み方は？", "c": ["きつね", "たぬき", "くま", "しか"], "a": "きつね", "e": "狐は「きつね」と読みます。"}, {"level": "hard", "q": "「狸」の読み方は？", "c": ["たぬき", "きつね", "くま", "さる"], "a": "たぬき", "e": "狸は「たぬき」と読みます。"}, {"level": "hard", "q": "「雀」の読み方は？", "c": ["すずめ", "からす", "はと", "つばめ"], "a": "すずめ", "e": "雀は「すずめ」と読みます。"}, {"level": "hard", "q": "「燕」の読み方は？", "c": ["つばめ", "すずめ", "からす", "はと"], "a": "つばめ", "e": "燕は「つばめ」と読みます。"}, {"level": "hard", "q": "「鴉」の読み方は？", "c": ["からす", "はと", "すずめ", "つばめ"], "a": "からす", "e": "鴉は「からす」と読みます。"}, {"level": "hard", "q": "「蜻蛉」の読み方は？", "c": ["とんぼ", "ちょう", "せみ", "ほたる"], "a": "とんぼ", "e": "蜻蛉は「とんぼ」と読みます。"}, {"level": "hard", "q": "「蝶」の読み方は？", "c": ["ちょう", "とんぼ", "せみ", "ほたる"], "a": "ちょう", "e": "蝶は「ちょう」と読みます。"}, {"level": "hard", "q": "「蛍」の読み方は？", "c": ["ほたる", "せみ", "ちょう", "とんぼ"], "a": "ほたる", "e": "蛍は「ほたる」と読みます。"}];
+
+let currentQuiz = [];
+let current = 0;
+let score = 0;
+let answered = false;
+
+const menu = document.getElementById("menu");
+const quiz = document.getElementById("quiz");
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const resultEl = document.getElementById("result");
+const commentEl = document.getElementById("comment");
+const countEl = document.getElementById("count");
+const totalEl = document.getElementById("total");
+const scoreEl = document.getElementById("score");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+const levelNameEl = document.getElementById("levelName");
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function startGame(level) {
+  if(level === "all") {
+    currentQuiz = shuffle([...quizData]);
+    levelNameEl.textContent = "全100問";
+  } else {
+    currentQuiz = shuffle(quizData.filter(x => x.level === level));
+    levelNameEl.textContent = level === "easy" ? "初級" : level === "normal" ? "中級" : "上級";
+  }
+
+  current = 0;
+  score = 0;
+  scoreEl.textContent = score;
+  totalEl.textContent = currentQuiz.length;
+
+  menu.classList.add("hidden");
+  quiz.classList.remove("hidden");
+  restartBtn.style.display = "none";
+
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  resultEl.textContent = "";
+  commentEl.textContent = "";
+  nextBtn.style.display = "none";
+  choicesEl.innerHTML = "";
+
+  const q = currentQuiz[current];
+  countEl.textContent = current + 1;
+  questionEl.textContent = q.q;
+
+  shuffle([...q.c]).forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.onclick = () => checkAnswer(btn, choice);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(button, selected) {
+  if(answered) return;
+  answered = true;
+
+  const q = currentQuiz[current];
+  const buttons = choicesEl.querySelectorAll("button");
+
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    if(btn.textContent === q.a) btn.classList.add("correct");
+  });
+
+  if(selected === q.a) {
+    score += 10;
+    scoreEl.textContent = score;
+    resultEl.textContent = "正解！";
+  } else {
+    button.classList.add("wrong");
+    resultEl.textContent = "不正解…";
+  }
+
+  commentEl.textContent = q.e;
+
+  if(current < currentQuiz.length - 1) {
+    nextBtn.style.display = "inline-block";
+  } else {
+    finishGame();
+  }
+}
+
+function nextQuestion() {
+  current++;
+  loadQuestion();
+}
+
+function finishGame() {
+  const max = currentQuiz.length * 10;
+  const rate = Math.round(score / max * 100);
+
+  questionEl.textContent = "ゲーム終了！";
+  choicesEl.innerHTML = "";
+  nextBtn.style.display = "none";
+  restartBtn.style.display = "inline-block";
+
+  commentEl.textContent = `スコアは ${score}/${max} 点、正答率 ${rate}% です。`;
+
+  if(rate === 100) {
+    resultEl.textContent = "🏆 全問正解！漢字博士です！";
+  } else if(rate >= 80) {
+    resultEl.textContent = "🎉 かなり優秀です！";
+  } else if(rate >= 50) {
+    resultEl.textContent = "👍 まずまずです！";
+  } else {
+    resultEl.textContent = "📚 もう一度挑戦して覚えよう！";
+  }
+}
+
+function restartGame() {
+  quiz.classList.add("hidden");
+  menu.classList.remove("hidden");
+}
+</script>
+</body>
+</html>
